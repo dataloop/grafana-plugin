@@ -1,1 +1,33 @@
-<div ng-include="httpConfigPartialSrc"></div>
+<br>
+<h5>Dataloop details</h5>
+
+<div class="tight-form-container">
+	<div class="tight-form">
+		<ul class="tight-form-list">
+			<li class="tight-form-item" style="width: 80px">
+				Url
+			</li>
+			<li>
+				<input type="text" class="tight-form-input input-xlarge" ng-model='current.url' placeholder="http://my.server.com:8080" ng-pattern="/^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/" required></input>
+			</li>
+			<li class="tight-form-item">
+				Access <tip>Direct = url is used directly from browser, Proxy = Grafana backend will proxy the request</tip>
+			</li>
+			<li>
+				<select class="input-medium tight-form-input" ng-model='current.access' ng-options="f for f in ['direct', 'proxy']"></select>
+			</li>
+		</ul>
+		<div class="clearfix"></div>
+	</div>
+    <div class="tight-form">
+		<ul class="tight-form-list">
+			<li class="tight-form-item" style="width: 80px">
+				Auth Key <tip>Go to https://app.dataloop.io settings to obtain authentication key</tip>
+			</li>
+			<li>
+				<input type="text" class="tight-form-input input-xlarge" ng-model='current.jsonData.authKey' required></input>
+			</li>
+        </ul>
+		<div class="clearfix"></div>
+    </div>
+</div>

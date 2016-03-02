@@ -22,12 +22,7 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
         return url.trim();
       });
 
-      this.username = datasource.username;
-      this.password = datasource.password;
-      this.name = datasource.name;
-      this.database = datasource.database;
-      this.basicAuth = datasource.basicAuth;
-
+      this.authKey = datasource.jsonData.authKey;
     }
 
     DataloopDatasource.prototype.query = function(options) {
@@ -49,30 +44,30 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
 
       // console.log('Q:', mainQuery);
 
-      return this.dalmatinerQuery(mainQuery).then(function(res) {
+      return this.runQuery(mainQuery).then(function(res) {
         return {data: new DalmatinerSeries(res.s, res.d).getTimeSeries()};
       });
     };
 
-    DataloopDatasource.prototype.dalmatinerQuery = function(query) {
-      return this._dalmatinerRequest('GET', '/', {q: query});
+    DataloopDatasource.prototype.runQuery = function(query) {
+      return this._request('GET', '/metrics/series', {query: query});
     };
 
-    DataloopDatasource.prototype.listBuckets = function() {
-      return this._dalmatinerRequest('GET', '/buckets');
+    DataloopDatasource.prototype.listAgents = function() {
+      return this._request('GET', '/agents');
     };
 
-    DataloopDatasource.prototype.listMetrics = function(bucket) {
-      return this._dalmatinerRequest('GET', '/buckets/' + bucket);
+    DataloopDatasource.prototype.listMetrics = function(agent) {
+      return this._request('GET', '/metrics', {source: agent});
     };
 
     DataloopDatasource.prototype.testDatasource = function() {
-      return this.listBuckets().then(function () {
+      return this.listAgents().then(function () {
         return { status: "success", message: "Data source is working", title: "Success" };
       });
     };
 
-    DataloopDatasource.prototype._dalmatinerRequest = function(method, url, params) {
+    DataloopDatasource.prototype._request = function(method, url, params) {
 
       var currentUrl = this.urls.shift();
       this.urls.push(currentUrl);
@@ -81,11 +76,8 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
         method: method,
         url:    currentUrl + url,
         params: params,
+        headers: {Authorization: 'Bearer ' + this.authKey}
       };
-
-      if (this.basicAuth) {
-        options.headers = {Authorization: this.basicAuth};
-      }
 
       return backendSrv.datasourceRequest(options).then(function ok(result) {
         return result.data;

@@ -18,15 +18,19 @@ function () {
 
     var q = this.target;
 
-    if (!q.bucket) {
-      throw "Bucket is missing";
+    if (!q.agent) {
+      throw "Agent is missing";
     }
 
     if (!q.metric) {
       throw "Metric is missing";
     }
 
-    var src = q.metric + " BUCKET " + q.bucket;
+    var metric = q.metric.split('.').map(function(part) {
+      return "'" + part + "'";
+    }).join('.');
+    var bucket = "'" + q.agent + "'";
+    var src = metric + " BUCKET " + bucket;
     if (q.mget_enabled && q.mget && q.mget !== 'none') {
       src = q.mget + "(" + src + ")";
     }

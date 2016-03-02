@@ -58,9 +58,9 @@
 
 	<ul class="tight-form-list" role="menu" ng-hide="target.rawQuery">
 		<li>
-			<metric-segment segment="bucketSegment" get-options="getBuckets()" on-change="bucketChanged()"></metric-segment>
+			<metric-segment segment="agentSegment" get-options="getAgents()" on-change="agentChanged()"></metric-segment>
 		</li>
-		<li ng-if='target.bucket'>
+		<li ng-if='target.agent'>
 			<input type="text"
 				class="tight-form-input"
 				ng-model="target.metric"
@@ -74,10 +74,10 @@
 		<li class="dropdown" ng-repeat="aggr in target.aggrs">
 			<span aggr-editor class="tight-form-item tight-form-func"></span>
 		</li>
-		<li class="dropdown" ng-if='target.bucket && target.metric'>
+		<li class="dropdown" ng-if='target.agent && target.metric'>
 			<span aggr-add></span>
 		</li>
-		<li ng-if='target.bucket && target.metric'>
+		<li ng-if='target.agent && target.metric'>
 	        <input type="text"
 	               class="tight-form-input"
 	               ng-model="target.alias"

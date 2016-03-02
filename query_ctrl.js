@@ -25,10 +25,10 @@ function (angular, _) {
         $timeout($scope.get_data);
       });
 
-      if (!target.bucket) {
-        $scope.bucketSegment = uiSegmentSrv.newSelectMeasurement();
+      if (!target.agent) {
+        $scope.agentSegment = uiSegmentSrv.newSegment({value: 'select agent', fake: true});
       } else {
-        $scope.bucketSegment = uiSegmentSrv.newSegment(target.bucket);
+        $scope.agentSegment = uiSegmentSrv.newSegment({value: 'select agent'});
       }
 
       // if (!target.metric) {
@@ -105,8 +105,8 @@ function (angular, _) {
       $scope.$parent.get_data();
     };
 
-    $scope.bucketChanged = function() {
-      $scope.target.bucket = $scope.bucketSegment.value;
+    $scope.agentChanged = function() {
+      $scope.target.agent = $scope.agentSegment.value;
       metrics = null;
     };
 
@@ -130,10 +130,10 @@ function (angular, _) {
       }
 
       return $scope.datasource
-        .listMetrics($scope.target.bucket)
+        .listMetrics($scope.target.agent)
         .then(function ok(res) {
-          metrics = res;
-          return cb(res);
+          metrics = _.map(res, 'name');
+          return cb(metrics);
         }, $scope.handleQueryError);
     };
 
@@ -142,9 +142,14 @@ function (angular, _) {
       $scope.get_data();
     };
 
-    $scope.getBuckets = function () {
-      return $scope.datasource.listBuckets()
-        .then($scope.transformToSegments(false), $scope.handleQueryError);
+    $scope.getAgents = function () {
+      var mapAgent = function(agent) {
+        return uiSegmentSrv.newSegment(agent.id);
+      };
+      return $scope.datasource.listAgents()
+        .then(function (agents) {
+          return _.map(agents, mapAgent);
+        });
     };
 
     $scope.mgetChanged = function(value) {
@@ -185,23 +190,6 @@ function (angular, _) {
       return [];
     };
 
-    $scope.transformToSegments = function(addTemplateVars) {
-
-      return function(results) {
-        var segments = _.map(results, function(segment) {
-          // original: return uiSegmentSrv.newSegment({ value: segment.text, expandable: segment.expandable });
-          return uiSegmentSrv.newSegment({ value: segment });
-        });
-
-        if (addTemplateVars) {
-          _.each(templateSrv.variables, function(variable) {
-            segments.unshift(uiSegmentSrv.newSegment({ type: 'template', value: '/$' + variable.name + '$/', expandable: true }));
-          });
-        }
-
-        return segments;
-      };
-    };
     $scope.init();
 
   });
