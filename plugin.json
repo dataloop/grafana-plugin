@@ -1,0 +1,17 @@
+{
+  "pluginType": "datasource",
+  "name": "Dataloop",
+
+  "type": "dataloop",
+  "serviceName": "DataloopDatasource",
+
+  "module": "app/plugins/datasource/dataloop/datasource",
+
+  "partials": {
+    "config": "app/plugins/datasource/dataloop/partials/config.html"
+  },
+
+  "defaultMatchFormat": "regex values",
+  "metrics": true,
+  "annotations": false
+}

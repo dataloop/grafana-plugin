@@ -2,7 +2,7 @@ define([
   'angular',
   'lodash',
   'app/core/utils/datemath',
-  './dalmatiner_series',
+  './series',
   './query_builder',
   './directives',
   './query_ctrl',
@@ -15,9 +15,9 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
 
   var module = angular.module('grafana.services');
 
-  module.factory('DalmatinerDatasource', function($q, backendSrv, templateSrv) {
+  module.factory('DataloopDatasource', function($q, backendSrv, templateSrv) {
 
-    function DalmatinerDatasource(datasource) {
+    function DataloopDatasource(datasource) {
       this.urls = _.map(datasource.url.split(','), function(url) {
         return url.trim();
       });
@@ -30,7 +30,7 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
 
     }
 
-    DalmatinerDatasource.prototype.query = function(options) {
+    DataloopDatasource.prototype.query = function(options) {
 
       var queries = options.targets
         .filter(function hiddens(target) {return !target.hide;})
@@ -54,25 +54,25 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
       });
     };
 
-    DalmatinerDatasource.prototype.dalmatinerQuery = function(query) {
+    DataloopDatasource.prototype.dalmatinerQuery = function(query) {
       return this._dalmatinerRequest('GET', '/', {q: query});
     };
 
-    DalmatinerDatasource.prototype.listBuckets = function() {
+    DataloopDatasource.prototype.listBuckets = function() {
       return this._dalmatinerRequest('GET', '/buckets');
     };
 
-    DalmatinerDatasource.prototype.listMetrics = function(bucket) {
+    DataloopDatasource.prototype.listMetrics = function(bucket) {
       return this._dalmatinerRequest('GET', '/buckets/' + bucket);
     };
 
-    DalmatinerDatasource.prototype.testDatasource = function() {
+    DataloopDatasource.prototype.testDatasource = function() {
       return this.listBuckets().then(function () {
         return { status: "success", message: "Data source is working", title: "Success" };
       });
     };
 
-    DalmatinerDatasource.prototype._dalmatinerRequest = function(method, url, params) {
+    DataloopDatasource.prototype._dalmatinerRequest = function(method, url, params) {
 
       var currentUrl = this.urls.shift();
       this.urls.push(currentUrl);
@@ -128,7 +128,7 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
       return (date.valueOf() / 1000).toFixed(0);
     }
 
-    return DalmatinerDatasource;
+    return DataloopDatasource;
 
   });
 

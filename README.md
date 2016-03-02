@@ -1,2 +1,2 @@
-# dalmatiner-grafana-plugin
-DalmatinerDB Grafana Plugin
+# dataloop-grafana-plugin
+Dataloop Grafana Plugin

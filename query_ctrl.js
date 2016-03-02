@@ -8,7 +8,7 @@ function (angular, _) {
 
   var module = angular.module('grafana.controllers');
 
-  module.controller('DalmatinerQueryCtrl', function($scope, $timeout, $sce, templateSrv, $q, uiSegmentSrv) {
+  module.controller('DataloopQueryCtrl', function($scope, $timeout, $sce, templateSrv, $q, uiSegmentSrv) {
 
     var metrics;
 
