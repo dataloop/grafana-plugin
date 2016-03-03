@@ -29,7 +29,7 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
 
       var queries = options.targets
             .filter(function hiddens(target) {return !target.hide;})
-            .map(_.partial(buildQuery, _, options))
+            .map(_.partial(buildQuery, options))
             .join(', ');
 
       //No query => return no data (inside a promise)
@@ -115,9 +115,7 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
       return (date.valueOf() / 1000).toFixed(0);
     }
 
-    function buildQuery(target, options) {
-      var queryParams = {
-      };
+    function buildQuery(options, target) {
       var queryBuilder = new DalmatinerQueryBuilder({
         query: target.query,
         rawQuery: target.rawQuery,
