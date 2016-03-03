@@ -116,14 +116,12 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
     }
 
     function buildQuery(options, target) {
-      var queryBuilder = new DalmatinerQueryBuilder({
-        query: target.query,
-        rawQuery: target.rawQuery,
+      var queryBuilder = new DalmatinerQueryBuilder(_.extend({
         bucket: target.agent,
         metric: target.metric.split('.')
             .map(encodeMetricPart)
             .join('.')
-      });
+      }, target));
       return queryBuilder.build().replace(/\$interval/g, (target.interval || options.interval));
     }
 
