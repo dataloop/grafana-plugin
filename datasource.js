@@ -28,12 +28,9 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
     DataloopDatasource.prototype.query = function(options) {
 
       var queries = options.targets
-        .filter(function hiddens(target) {return !target.hide;})
-        .map(function buildQuery(target) {
-          var queryBuilder = new DalmatinerQueryBuilder(target);
-          return queryBuilder.build().replace(/\$interval/g, (target.interval || options.interval));
-        })
-        .join(', ');
+            .filter(function hiddens(target) {return !target.hide;})
+            .map(_.partial(buildQuery, _, options))
+            .join(', ');
 
       //No query => return no data (inside a promise)
       if (!queries) {
@@ -41,8 +38,6 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
       }
 
       var mainQuery = 'SELECT ' + templateSrv.replace(queries, options.scopedVars) + ' ' + getTimeFilter(options);
-
-      // console.log('Q:', mainQuery);
 
       return this.runQuery(mainQuery).then(function(res) {
         return {data: new DalmatinerSeries(res.s, res.d).getTimeSeries()};
@@ -118,6 +113,24 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
         date = dateMath.parse(date, roundUp);
       }
       return (date.valueOf() / 1000).toFixed(0);
+    }
+
+    function buildQuery(target, options) {
+      var queryParams = {
+      };
+      var queryBuilder = new DalmatinerQueryBuilder({
+        query: target.query,
+        rawQuery: target.rawQuery,
+        bucket: target.agent,
+        metric: target.metric.split('.')
+            .map(encodeMetricPart)
+            .join('.')
+      });
+      return queryBuilder.build().replace(/\$interval/g, (target.interval || options.interval));
+    }
+
+    function encodeMetricPart(part) {
+      return part === '*' ? part : "'" + part + "'";
     }
 
     return DataloopDatasource;
