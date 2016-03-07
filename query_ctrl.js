@@ -25,18 +25,6 @@ function (angular, _) {
         $timeout($scope.get_data);
       });
 
-      if (!target.agent) {
-        $scope.agentSegment = uiSegmentSrv.newSegment({value: 'select agent', fake: true});
-      } else {
-        $scope.agentSegment = uiSegmentSrv.newSegment({value: 'select agent'});
-      }
-
-      // if (!target.metric) {
-      //   $scope.metricSegment = uiSegmentSrv.newSelectMeasurement();
-      // } else {
-      //   $scope.metricSegment = uiSegmentSrv.newSegment(target.metric);
-      // }
-
       $scope.mgets = ['sum', 'avg'];
       $scope.aggrs = [
         {
@@ -105,11 +93,6 @@ function (angular, _) {
       $scope.$parent.get_data();
     };
 
-    $scope.agentChanged = function() {
-      $scope.target.agent = $scope.agentSegment.value;
-      metrics = null;
-    };
-
     //We could replace text input, this with something like graphite segments, and get rid of this kind of things
     $scope.metricChanged = function() {
       if ($scope.oldMetric !== $scope.target.metric) {
@@ -130,7 +113,7 @@ function (angular, _) {
       }
 
       return $scope.datasource
-        .listMetrics($scope.target.agent)
+        .listMetrics()
         .then(function ok(res) {
           metrics = _.map(res, 'name');
           return cb(metrics);
@@ -140,16 +123,6 @@ function (angular, _) {
     $scope.toggleQueryMode = function () {
       $scope.target.rawQuery = !$scope.target.rawQuery;
       $scope.get_data();
-    };
-
-    $scope.getAgents = function () {
-      var mapAgent = function(agent) {
-        return uiSegmentSrv.newSegment(agent.id);
-      };
-      return $scope.datasource.listAgents()
-        .then(function (agents) {
-          return _.map(agents, mapAgent);
-        });
     };
 
     $scope.mgetChanged = function(value) {
