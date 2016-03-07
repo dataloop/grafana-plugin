@@ -25,7 +25,7 @@ function (angular, _) {
         $timeout($scope.get_data);
       });
 
-      $scope.mgets = ['sum', 'avg'];
+      $scope.mgets = ['none', 'sum', 'avg'];
       $scope.aggrs = [
         {
           name: 'avg',
