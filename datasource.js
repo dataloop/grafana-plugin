@@ -67,8 +67,7 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
       var options = {
         method: method,
         url:    currentUrl + url,
-        params: params,
-        headers: {Authorization: 'Bearer ' + this.authKey}
+        params: _.extend({token: this.authKey}, params)
       };
 
       return backendSrv.datasourceRequest(options).then(function ok(result) {
