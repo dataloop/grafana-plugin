@@ -113,8 +113,8 @@ function (angular, _, dateMath, DalmatinerSeries, DalmatinerQueryBuilder) {
 
     function buildQuery(finger, options, target) {
       var queryBuilder = new DalmatinerQueryBuilder(_.defaults({
-        bucket: finger,
-        metric: target.metric.split('.')
+        bucket: finger.slice(0, 2),
+        metric: [finger].concat(target.metric.split('.'))
             .map(encodeMetricPart)
             .join('.')
       }, target));
